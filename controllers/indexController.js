@@ -1,27 +1,4 @@
-// const index = (req, res) =>{
-//     res.status(200).send("Hello World!")
-// }
-
-// const listadoAlumnos = (req,res) => {
-//     res.status(200).json({
-//         alumno1: "Juan",
-//         alumno2: "Ana",
-//         alumno3: "Karen"
-//     }) 
-// }
-
-// const ejemploPost = (req,res) => {
-//     res.status(201).json({
-//         msg: "Guardado con exito"
-//     }) 
-// }
-
-// const ejemploBody = (req,res) => {
-//     res.status(200).json({
-//         name: req.body.name,
-//         city: req.body.city
-//     }) 
-// }
+const{Pharmacy}= require("../models/farmacia")
 
 const nameLastname = (req, res) =>{
     res.send(`Hello ${req.params.names}`+" "+`${req.params.lastname}`)
@@ -74,6 +51,19 @@ const bodyName = (req, res) =>{
     })
 }
 
+const verPharmacy = async(req,res)=>{
+  const items = await Pharmacy.find()
+  res.status(200).json({items})
+}
 
+const crearPharmacy = async(req,res)=>{
+  try {
+    const item = new Pharmacy(req.body)
+    await item.save()
+    res.status(201).json({item})
+  } catch (error) {
+    res.status(501).json({error})
+  }
+}
 
-module.exports = {nameLastname, listaCompras, dividir, suma, parImpar, bodyName}
+module.exports = {nameLastname, listaCompras, dividir, suma, parImpar, bodyName, verPharmacy, crearPharmacy}
