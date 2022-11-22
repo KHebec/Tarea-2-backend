@@ -90,7 +90,7 @@ const editarPharmacy = async(req,res)=>{
 
 const deletePharmacy = async(req,res)=>{
   const item = await Pharmacy.findByIdAndDelete(req.params.id)
-  res.status(204).json({msg: "El siguiente item fue eliminado", item})
+  res.status(200).json({msg: "El siguiente item fue eliminado", item})
   
 }
 
