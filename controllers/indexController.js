@@ -1,4 +1,5 @@
 const{Pharmacy}= require("../models/farmacia")
+const{validationResult}= require("express-validator")
 
 const nameLastname = (req, res) =>{
     res.send(`Hello ${req.params.names}`+" "+`${req.params.lastname}`)
@@ -58,12 +59,44 @@ const verPharmacy = async(req,res)=>{
 
 const crearPharmacy = async(req,res)=>{
   try {
-    const item = new Pharmacy(req.body)
-    await item.save()
-    res.status(201).json({item})
+    const err = validationResult(req)
+    if (err.isEmpty()) {
+      const item = new Pharmacy(req.body)
+      await item.save()
+      res.status(201).json({item})
+    } else {
+      res.status(501).json({err})
+    }
+    
   } catch (error) {
     res.status(501).json({error})
   }
 }
 
-module.exports = {nameLastname, listaCompras, dividir, suma, parImpar, bodyName, verPharmacy, crearPharmacy}
+const editarPharmacy = async(req,res)=>{
+  try {
+    const err= validationResult(req)
+    if (err.isEmpty) {
+      await Pharmacy.findByIdAndUpdate(req.params.id, req.body)
+    res.status(201).json({msg: "se actualizo el producto"})
+    } else {
+      res.status(501).json({err})
+    }
+    
+  } catch (error) {
+    res.status(501).json({error})
+  }
+}
+
+const deletePharmacy = async(req,res)=>{
+  const item = await Pharmacy.findByIdAndDelete(req.params.id)
+  res.status(204).json({msg: "El siguiente item fue eliminado", item})
+}
+
+const vistaUnicaFarmacia = async(req,res)=>{
+  const item= await Pharmacy.findById(req.params.id)
+  res.status(200).json({item})
+}
+
+module.exports = {nameLastname, listaCompras, dividir, suma, parImpar, 
+  bodyName, verPharmacy, crearPharmacy, editarPharmacy, deletePharmacy, vistaUnicaFarmacia}
